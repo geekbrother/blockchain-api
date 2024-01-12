@@ -22,17 +22,18 @@ permissions:
   id-token: write
 
 jobs:
-  providers-test:
-    name: Run provider specific tests
+  providers-list:
+    name: Preparing providers list
     runs-on: ubuntu-latest
+    outputs:
+      providers: ${{ steps.set-matrix.outputs.providers }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 2
-
-      - name: Determine Providers List
-        id: get_list
+      - name: Creating list of changed providers
+        id: set-matrix
         run: |
           if [[ -n "${{ github.event.inputs.providers }}" ]]; then
             PROVIDERS_LIST="${{ github.event.inputs.providers }}"
@@ -48,11 +49,18 @@ jobs:
               fi
             done
           fi
-          echo "PROVIDERS_LIST=$PROVIDERS_LIST" >> $GITHUB_ENV
+          JSON_FMT=$(printf '[%s]' "$(printf '"%s",' "${PROVIDERS_LIST[@]}" | sed 's/,$//')")
+          echo "::set-output name=providers::${JSON_FMT}"
 
-      - name: Use the values in Cargo
-        if: env.PROVIDERS_LIST != ''
+  providers-test:
+    name: Run provider specific tests
+    needs: providers-list
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        provider: ${{fromJson(needs.providers-list.outputs.providers)}}
+    if: ${{fromJson(needs.providers-list.outputs.providers)}}
+    steps:
+      - name: Run Tests for ${{ matrix.provider }}
         run: |
-          for value in $PROVIDERS_LIST; do
-            echo "Current value: ${value}_provider"
-          done
+          echo "Running tests for ${{ matrix.provider }} provider"
