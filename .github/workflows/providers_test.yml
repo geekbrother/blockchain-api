@@ -1,4 +1,4 @@
-name: ❖ Providers test check
+name: ❖ Providers functional tests
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       providers:
         description: 'Providers list to test (space separated)'
         required: false
-        default: 'provider1 provider2'
+        default: 'coinbase binance'
   workflow_call:
 
 concurrency: cd
@@ -17,7 +17,8 @@ permissions:
   id-token: write
 
 jobs:
-  your_job:
+  providers-test:
+    name: Run provider specific tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -36,6 +37,7 @@ jobs:
           echo "PROVIDERS_LIST=$PROVIDERS_LIST" >> $GITHUB_ENV
 
       - name: Use the values
+        if: env.PROVIDERS_LIST != ''
         run: |
           for value in $PROVIDERS_LIST; do
             echo "Current value: $value"
