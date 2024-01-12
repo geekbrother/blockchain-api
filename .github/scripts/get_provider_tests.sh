@@ -1,6 +1,9 @@
 #!/bin/bash
+BEFORE_SHA=$1
+AFTER_SHA=$2
+
 # Fetch the list of changed files
-CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+CHANGED_FILES=$(git diff --name-only $BEFORE_SHA $AFTER_SHA)
 PROVIDERS_DIR="src/providers/"
 
 # Iterate over each changed file

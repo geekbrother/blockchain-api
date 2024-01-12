@@ -25,7 +25,7 @@ jobs:
       - name: Run the script to get the list
         id: get_list
         run: |
-          LIST=$(.github/scripts/get_provider_tests.sh)
+          LIST=$(.github/scripts/get_provider_tests.sh ${{ github.event.before }} ${{ github.sha }})
           echo "LIST=$LIST" >> $GITHUB_ENV
 
       - name: Use the values
