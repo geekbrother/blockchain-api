@@ -1,0 +1,36 @@
+name: ❖ Providers test check
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to check'
+        required: false
+        default: 'latest'
+
+concurrency: cd
+
+permissions:
+  contents: write
+  checks: write
+  id-token: write
+
+jobs:
+  your_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run the script to get the list
+        id: get_list
+        run: |
+          LIST=$(.github/scripts/get_provider_tests.sh)
+          echo "LIST=$LIST" >> $GITHUB_ENV
+
+      - name: Use the values
+        run: |
+          for value in $LIST; do
+            echo "Current value: $value"
+            # Run your command with "$value"
+          done
