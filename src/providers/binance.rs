@@ -15,6 +15,7 @@ use {
     tracing::info,
 };
 
+// Comment
 #[derive(Debug)]
 pub struct BinanceProvider {
     pub client: Client<HttpsConnector<HttpConnector>>,
