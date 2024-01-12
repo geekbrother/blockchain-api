@@ -51,6 +51,9 @@ jobs:
           fi
           JSON_FMT=$(printf '[%s]' "$(printf '"%s",' "${PROVIDERS_LIST[@]}" | sed 's/,$//')")
           echo "::set-output name=providers::${JSON_FMT}"
+      - name: Print Matrix for Debugging
+        run: |
+          echo "Matrix: ${{ steps.set-matrix.outputs.providers }}"
 
   providers-test:
     name: Run provider specific tests
