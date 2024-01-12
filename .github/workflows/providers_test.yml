@@ -48,19 +48,18 @@ jobs:
                 PROVIDERS_LIST+="$PROVIDER_TEST_NAME "
               fi
             done
-            PROVIDERS_LIST="${PROVIDERS_LIST% }"
           fi
           JSON_FMT=$(printf '[%s]' "$(printf '"%s",' "${PROVIDERS_LIST[@]}" | sed 's/,$//')")
           echo "::set-output name=providers::${JSON_FMT}"
       - name: Print Matrix for Debugging
         run: |
-          echo "Matrix: ${{ steps.set-matrix.outputs.providers }}"
+          echo "Providers matrix: ${{ steps.set-matrix.outputs.providers }}"
 
   providers-test:
     name: Run provider specific tests
     needs: providers-list
     runs-on: ubuntu-latest
-    if: needs.providers-list.outputs.providers != '[]'
+    if: needs.providers-list.outputs.providers != '[""]'
     strategy:
       fail-fast: false
       matrix:
