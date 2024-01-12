@@ -51,7 +51,7 @@ jobs:
 
             PROVIDERS_LIST="${PROVIDERS_LIST% }"
           fi
-          
+
           JSON_FMT=$(printf '[%s]' "$(printf '"%s",' "${PROVIDERS_LIST[@]}" | sed 's/,$//')")
           echo "::set-output name=providers::${JSON_FMT}"
       - name: Print Matrix for Debugging
@@ -59,7 +59,7 @@ jobs:
           echo "Providers matrix: ${{ steps.set-matrix.outputs.providers }}"
 
   providers-test:
-    name: Run provider specific tests
+    name: Run provider tests
     needs: providers-list
     runs-on: ubuntu-latest
     if: needs.providers-list.outputs.providers != '[""]'
