@@ -11,8 +11,9 @@ on:
     inputs:
       providers_directory:
         type: string
-        required: false
-        default: 'src/providers/'
+        required: true
+        description: 'Directory where providers sources are located'
+        default: 'providers'
 
 concurrency: cd
 
@@ -37,7 +38,7 @@ jobs:
           if [[ -n "${{ github.event.inputs.providers }}" ]]; then
             PROVIDERS_LIST="${{ github.event.inputs.providers }}"
           else
-            PROVIDERS_DIR="src/providers/"
+            PROVIDERS_DIR="${{ github.event.inputs.providers_directory }}"
             CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
             PROVIDERS_LIST=""
 

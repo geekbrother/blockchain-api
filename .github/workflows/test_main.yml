@@ -16,3 +16,5 @@ jobs:
   cd:
     name: Providers Test
     uses: ./.github/workflows/providers_test.yml
+    with:
+      providers_directory: "src/providers/"
