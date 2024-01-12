@@ -54,5 +54,5 @@ jobs:
         if: env.PROVIDERS_LIST != ''
         run: |
           for value in $PROVIDERS_LIST; do
-            echo "Current value: $value_provider"
+            echo "Current value: ${value}_provider"
           done
