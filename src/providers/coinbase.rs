@@ -28,7 +28,7 @@ pub struct CoinbaseProvider {
     pub app_id: String,
     pub http_client: Client<HttpsConnector<hyper::client::HttpConnector>>,
 }
-// comment
+
 impl CoinbaseProvider {
     pub fn new(api_key: String, app_id: String) -> Self {
         let http_client = Client::builder().build::<_, hyper::Body>(HttpsConnector::new());
