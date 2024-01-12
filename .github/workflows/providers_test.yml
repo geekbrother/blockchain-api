@@ -8,6 +8,11 @@ on:
         required: false
         default: 'coinbase binance'
   workflow_call:
+    inputs:
+      providers_directory:
+        type: string
+        required: false
+        default: 'src/providers/'
 
 concurrency: cd
 
@@ -26,20 +31,28 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Run the script to get the list
+      - name: Determine Providers List
         id: get_list
         run: |
           if [[ -n "${{ github.event.inputs.providers }}" ]]; then
             PROVIDERS_LIST="${{ github.event.inputs.providers }}"
-          else  
-            PROVIDERS_LIST=$(.github/scripts/get_provider_tests.sh ${{ github.event.before }} ${{ github.sha }})
+          else
+            PROVIDERS_DIR="${{ github.event.inputs.providers_directory }}"
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+            PROVIDERS_LIST=""
+
+            for file in $CHANGED_FILES; do
+              if [[ $file == $PROVIDERS_DIR* ]]; then
+                PROVIDER_TEST_NAME=$(echo $file | sed "s|^$PROVIDERS_DIR||" | sed 's|/|::|g' | sed 's|\.rs$||')
+                PROVIDERS_LIST+="$PROVIDER_TEST_NAME "
+              fi
+            done
           fi
           echo "PROVIDERS_LIST=$PROVIDERS_LIST" >> $GITHUB_ENV
 
-      - name: Use the values
+      - name: Use the values in Cargo
         if: env.PROVIDERS_LIST != ''
         run: |
           for value in $PROVIDERS_LIST; do
             echo "Current value: $value"
-            # Run your command with "$value"
           done
