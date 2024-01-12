@@ -48,6 +48,7 @@ jobs:
                 PROVIDERS_LIST+="$PROVIDER_TEST_NAME "
               fi
             done
+            PROVIDERS_LIST="${PROVIDERS_LIST%"${PROVIDERS_LIST##*[![:space:]]}"}"
           fi
           JSON_FMT=$(printf '[%s]' "$(printf '"%s",' "${PROVIDERS_LIST[@]}" | sed 's/,$//')")
           echo "::set-output name=providers::${JSON_FMT}"
