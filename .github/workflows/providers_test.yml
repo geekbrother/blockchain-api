@@ -59,10 +59,11 @@ jobs:
     name: Run provider specific tests
     needs: providers-list
     runs-on: ubuntu-latest
+    if: needs.providers-list.outputs.providers != '[]'
     strategy:
+      fail-fast: false
       matrix:
         provider: ${{fromJson(needs.providers-list.outputs.providers)}}
-    if: ${{fromJson(needs.providers-list.outputs.providers)}}
     steps:
       - name: Run Tests for ${{ matrix.provider }}
         run: |
