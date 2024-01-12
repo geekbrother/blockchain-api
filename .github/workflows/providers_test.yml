@@ -3,10 +3,10 @@ name: ❖ Providers test check
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version to check'
+      providers:
+        description: 'Providers list to test (space separated)'
         required: false
-        default: 'latest'
+        default: 'provider1 provider2'
   push:
     branches:
       - master
@@ -32,12 +32,16 @@ jobs:
       - name: Run the script to get the list
         id: get_list
         run: |
-          LIST=$(.github/scripts/get_provider_tests.sh ${{ github.event.before }} ${{ github.sha }})
-          echo "LIST=$LIST" >> $GITHUB_ENV
+          if [[ -n "${{ github.event.inputs.providers }}" ]]; then
+            PROVIDERS_LIST="${{ github.event.inputs.providers }}"
+          else  
+            PROVIDERS_LIST=$(.github/scripts/get_provider_tests.sh ${{ github.event.before }} ${{ github.sha }})
+          fi
+          echo "PROVIDERS_LIST=$PROVIDERS_LIST" >> $GITHUB_ENV
 
       - name: Use the values
         run: |
-          for value in $LIST; do
+          for value in $PROVIDERS_LIST; do
             echo "Current value: $value"
             # Run your command with "$value"
           done
