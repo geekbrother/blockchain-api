@@ -37,7 +37,7 @@ jobs:
           if [[ -n "${{ github.event.inputs.providers }}" ]]; then
             PROVIDERS_LIST="${{ github.event.inputs.providers }}"
           else
-            PROVIDERS_DIR="${{ github.event.inputs.providers_directory }}"
+            PROVIDERS_DIR="src/providers/"
             CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
             PROVIDERS_LIST=""
 
