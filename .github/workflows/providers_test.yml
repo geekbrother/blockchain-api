@@ -53,8 +53,7 @@ jobs:
           fi
 
           JSON_FMT=$(printf '[%s]' "$(echo $PROVIDERS_LIST | awk '{for(i=1;i<=NF;i++) printf "\"%s\",", $i}' | sed 's/,$//')")
-
-          echo "::set-output name=providers::${JSON_FMT}"
+          echo "{providers}={JSON_FMT}" >> $GITHUB_OUTPUT
       - name: Print Matrix for Debugging
         run: |
           echo "Providers matrix: ${{ steps.set-matrix.outputs.providers }}"
