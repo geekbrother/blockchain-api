@@ -14,7 +14,7 @@ use {
     std::collections::HashMap,
     tracing::info,
 };
-
+// comment
 #[derive(Debug)]
 pub struct BinanceProvider {
     pub client: Client<HttpsConnector<HttpConnector>>,
