@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   providers-test:
-    name: Provider specific tests
+    name: Run provider specific tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
