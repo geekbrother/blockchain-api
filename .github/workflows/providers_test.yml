@@ -52,9 +52,7 @@ jobs:
             PROVIDERS_LIST="${PROVIDERS_LIST% }"
           fi
 
-          echo "List: $PROVIDERS_LIST"
           JSON_FMT=$(printf '[%s]' "$(echo $PROVIDERS_LIST | awk '{for(i=1;i<=NF;i++) printf "\"%s\",", $i}' | sed 's/,$//')")
-          echo "JSON: $JSON_FMT"
 
           echo "::set-output name=providers::${JSON_FMT}"
       - name: Print Matrix for Debugging
