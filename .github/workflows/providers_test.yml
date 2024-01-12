@@ -7,11 +7,7 @@ on:
         description: 'Providers list to test (space separated)'
         required: false
         default: 'provider1 provider2'
-  push:
-    branches:
-      - master
-    paths:
-      - 'src/providers/**'
+  workflow_call:
 
 concurrency: cd
 
