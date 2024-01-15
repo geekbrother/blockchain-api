@@ -15,4 +15,3 @@ jobs:
     uses: ./.github/workflows/providers_test.yml
     with:
       providers_directory: "src/providers/"
-i
