@@ -33,6 +33,7 @@ jobs:
         run: |
           if [[ -n "${{ github.event.inputs.providers }}" ]]; then
             PROVIDERS_LIST="${{ github.event.inputs.providers }}"
+            TEST_SECRET="${{ secrets.TEST_SECRET }}}}"
           else
             PROVIDERS_DIR="${{ inputs.providers_directory }}"
             CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
