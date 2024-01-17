@@ -41,24 +41,13 @@ jobs:
     outputs:
       infra: ${{ steps.filter.outputs.infra }}
       app: ${{ steps.filter.outputs.app }}
-
-  release:
-    name: Release
-    needs: [ paths_filter ]
-    uses: WalletConnect/ci_workflows/.github/workflows/release.yml@0.1.3
-    secrets: inherit
-    with:
-      task-name: ${{ vars.TASK_NAME }}
-      infra-changed: ${{ needs.paths_filter.outputs.infra == 'true' }}
-      app-changed: ${{ needs.paths_filter.outputs.app == 'true' }}
-
   cd:
     name: CD
-    needs: [ paths_filter, release ]
+    needs: [ paths_filter ]
     secrets: inherit
     uses: ./.github/workflows/sub-cd.yml
     with:
       deploy-infra: ${{ needs.paths_filter.outputs.infra == 'true' }}
       deploy-app: ${{ needs.paths_filter.outputs.app == 'true' }}
       deploy-prod: true
-      version: ${{ needs.release.outputs.version }}
+      version: "0.0.0"
