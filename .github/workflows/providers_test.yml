@@ -57,7 +57,7 @@ jobs:
 
   providers-test:
     name: Run provider tests
-    needs: providers-list
+    needs: providers-listd
     runs-on: ubuntu-latest
     if: needs.providers-list.outputs.providers != '[]'
     strategy:
