@@ -1,4 +1,4 @@
-name: ❖ Providers functional tests
+name: ❖ Providers
 
 on:
   workflow_dispatch:
@@ -7,18 +7,26 @@ on:
         description: 'Providers list to test (space separated)'
         required: false
         default: 'coinbase binance'
+      stage-url:
+        description: 'RPC URL'
+        required: false
+        default: 'https://staging.rpc.walletconnect.org'
   workflow_call:
     inputs:
-      providers_directory:
+      providers-directory:
         type: string
         required: true
         description: 'Directory where providers sources are located'
+      stage-url:
+        type: string
+        required: true
+        description: 'Stage RPC URL'
 
 concurrency: cd
 
 jobs:
   providers-list:
-    name: Preparing providers list
+    name: "Preparing providers list"
     runs-on:
       group: ${{ vars.RUN_GROUP }}
     outputs:
@@ -33,10 +41,9 @@ jobs:
         run: |
           if [[ -n "${{ github.event.inputs.providers }}" ]]; then
             PROVIDERS_LIST="${{ github.event.inputs.providers }}"
-            TEST_SECRET="${{ secrets.TEST_SECRET }}}}"
           else
-            PROVIDERS_DIR="${{ inputs.providers_directory }}"
-            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+            PROVIDERS_DIR="${{ inputs.providers-directory }}"
+            CHANGED_FILES=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")
             PROVIDERS_LIST=""
 
             for file in $CHANGED_FILES; do
@@ -50,21 +57,35 @@ jobs:
           fi
 
           JSON_FMT=$(printf '[%s]' "$(echo $PROVIDERS_LIST | awk '{for(i=1;i<=NF;i++) printf "\"%s\",", $i}' | sed 's/,$//')")
-          echo "providers=$JSON_FMT" >> $GITHUB_OUTPUT
-      - name: Print Matrix for Debugging
+          echo "providers=$JSON_FMT" >> "$GITHUB_OUTPUT"
+      - name: Print list of changed providers
         run: |
           echo "Providers matrix: ${{ steps.set-matrix.outputs.providers }}"
 
   providers-test:
-    name: Run provider tests
-    needs: providers-listd
-    runs-on: ubuntu-latest
+    name: "Run provider tests"
+    needs: providers-list
+    runs-on:
+      group: ${{ vars.RUN_GROUP }}
     if: needs.providers-list.outputs.providers != '[]'
     strategy:
       fail-fast: false
       matrix:
         provider: ${{fromJson(needs.providers-list.outputs.providers)}}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: "Install Rust ${{ vars.RUST_VERSION }}"
+        uses: WalletConnect/actions-rs/toolchain@1.0.0
+        with:
+          toolchain: ${{ vars.RUST_VERSION }}
+          profile: 'default'
+          override: true
+
       - name: Run Tests for ${{ matrix.provider }}
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          RPC_URL: ${{ inputs.stage-url }}
         run: |
-          echo "Running tests for ${{ matrix.provider }} provider"
+            cargo test ${{ matrix.provider }}_provider -- --ignored
