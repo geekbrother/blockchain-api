@@ -13,6 +13,14 @@ jobs:
   cd:
     name: Providers Test
     uses: ./.github/workflows/providers_test.yml
+    secrets: inherit
     with:
       providers-directory: "src/providers/"
       stage-url: "https://stage.example.com"
+
+  another-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      # Additional steps
