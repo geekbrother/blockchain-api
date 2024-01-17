@@ -22,7 +22,6 @@ use {
     url::Url,
 };
 
-// Test
 #[derive(Debug)]
 pub struct CoinbaseProvider {
     pub api_key: String,
