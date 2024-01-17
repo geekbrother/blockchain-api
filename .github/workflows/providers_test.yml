@@ -27,8 +27,7 @@ concurrency: cd
 jobs:
   providers-list:
     name: "Preparing providers list"
-    runs-on:
-      group: ${{ vars.RUN_GROUP }}
+    runs-on: ${{ vars.RUN_GROUP }}
     outputs:
       providers: ${{ steps.set-matrix.outputs.providers }}
     steps:
@@ -65,8 +64,7 @@ jobs:
   providers-test:
     name: "Run provider tests"
     needs: providers-list
-    runs-on:
-      group: ${{ vars.RUN_GROUP }}
+    runs-on: ${{ vars.RUN_GROUP }}
     if: needs.providers-list.outputs.providers != '[]'
     strategy:
       fail-fast: false
