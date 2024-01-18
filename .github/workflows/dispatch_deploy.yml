@@ -66,8 +66,18 @@ jobs:
           else
             echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
           fi
+          echo $(git tag | sort --version-sort | tail -n1)
     outputs:
       version: ${{ steps.select_version.outputs.version }}
+
+  echo:
+    name: Echo debug
+    needs: [ select_version ]
+    runs-on: ${{ vars.RUN_GROUP }}
+    steps:
+      - name: Print tag version
+        run: |
+          echo "Tag version: ${{ needs.select_version.outputs.version }}"
 
   cd:
     name: CD
