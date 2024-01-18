@@ -65,6 +65,9 @@ jobs:
             echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
           fi
           echo $(git tag | sort --version-sort | tail -n1)
+      - name: Echo
+        run: |
+          echo "version=${{ steps.select_version.outputs.version }}"
     outputs:
       version: ${{ steps.select_version.outputs.version }}
 
