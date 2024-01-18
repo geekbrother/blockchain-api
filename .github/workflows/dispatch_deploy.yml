@@ -79,4 +79,4 @@ jobs:
       deploy-infra: ${{ inputs.deploy-infra }}
       deploy-app: ${{ inputs.deploy-app }}
       deploy-prod: ${{ inputs.stage == 'prod' }}
-      version: ${{ needs.select_version .outputs.version }}
+      version: ${{ needs.select_version.outputs.version }}
