@@ -80,7 +80,7 @@ jobs:
   cd:
     name: CD
     uses: ./.github/workflows/sub-cd.yml
-    needs: [ select_version ]
+    needs: [ echo, select_version ]
     if: ${{ always() && !cancelled() && !failure() }}
     secrets: inherit
     with:
